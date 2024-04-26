@@ -1,2 +1,2 @@
 # techlab
-A e commerce website only for computer parts
+An E-Commerce website only for computer parts
