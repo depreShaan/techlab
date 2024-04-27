@@ -26,6 +26,33 @@ if (isset($_GET['brand'])) {
     $stmt->execute();
 }
 $prodcuts = $stmt->fetchAll();
+require_once('DBconnect.php');
+if (isset($_POST['delete']) && isset($_POST['product_id'])) {
+    $product_id_to_delete = $_POST['product_id'];
+    $sql = "DELETE FROM product WHERE product_id = $product_id_to_delete";
+    if ($conn->query($sql) === TRUE) {
+        echo "Record deleted successfully";
+        header("Location:drop_product.php");
+    } else {
+        echo "Error deleting record: " . $conn->error;
+    } 
+}
+if(isset($_POST['update'])){
+    $product_id = $_POST['product_id'];
+    
+       
+       $update_stock = mysqli_real_escape_string($conn, $_POST['stock']);
+        mysqli_query($conn, "UPDATE product SET stock='$update_stock' WHERE product_id = '$product_id'") or die('query failed');
+    
+       
+       $message[] = 'Product Details Updated';
+       header('location:stock_status.php');
+       
+    
+     
+    
+    
+    }
 ?>
 
 <!DOCTYPE html>
@@ -133,35 +160,15 @@ $prodcuts = $stmt->fetchAll();
     </style>
 </head>
 <body>
-    <nav>
-        <form class="search-bar" method="get">
-            <input type="text" name="brand" placeholder="Search by product ID">
-            <input type="submit" value="Search">
-        </form>
+<nav>
         <div class="links">
-        <a href="home.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-        <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/home.png" alt="home" style="margin-right: 10px;">
-        <span style="color: black;">Home</span></a>
-<div class="dropdown">
-                <a href="index.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-                <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/box.png" alt="box" style="margin-right: 10px;">
-                <span style="color: black;">Product</span></a>
-                <div class="dropdown-content">
-                    <a href="cpu.php">CPU</a>
-                    <a href="graphics_card.php">Graphics Card</a>
-                    <a href="motherboard.php">Motherboard</a>
-                    <a href="ram.php">RAM</a>
-                    <a href="storage.php">Storage</a>
-                    <a href="powersupply.php">Power Supply</a>
-                </div>
-            </div>
-            <a href="login.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-            <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/person-male.png" alt="person-male" style="margin-right: 10px;"><span style="color: black;">Login</span></a>
-            <a href="signup.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-            <img width="30" height="30" src="https://img.icons8.com/ios/50/signing-a-document.png" alt="signing-a-document" style="margin-right: 10px;"><span style="color: black;">Sign Up</span></a>
-            <a href="account.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-            <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/person-male.png" alt="signing-a-document" style="margin-right: 10px;"><span style="color: black;">My Profile</span></a>
-        </div>
+
+            <a href="search.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+            <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/search--v1.png" alt="search--v1" style="margin-right: 10px;">
+            <span style="color: black;">Search</span></a>
+            <a href="Admin_dashboard.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+            <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/person-male.png" alt="person-male" style="margin-right: 10px;"><span style="color: black;">Dashboard</span></a>
+                 </div>
     </nav>
     
     <table>
@@ -169,6 +176,9 @@ $prodcuts = $stmt->fetchAll();
             <th>Brand</th>
             <th>Product Title</th>            
             <th>Product Price</th>
+            <th>Current Stock</th>
+            <th>Value</th>
+            <th></th>
             
         </tr>
         <?php if (count($prodcuts) > 0): ?>
@@ -177,7 +187,19 @@ $prodcuts = $stmt->fetchAll();
                 <td><?= $product['brand'] ?></td>
                 <td><?= $product['model_name'] ?></td>                
                 <td><?= $product['new'] ?></td>
+                <td>
+                <td><?= $product['stock'] ?></td>
+            </td>
+            
+            <td>
+                <form method="POST" action="stock_status.php">
                 
+            <input type="text" name="stock" value="" size=2> <br><br>
+            
+                    <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+                    <input type="submit" name="update" value="Update">
+                </form>
+            </td>
             </tr>
             <?php endforeach; ?>
         <?php else: ?>

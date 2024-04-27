@@ -1,5 +1,5 @@
 <?php
-// Connect to your database
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -7,29 +7,25 @@ $dbname = "techlab";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+session_start();
+$email = $_SESSION['email'];
+if(!isset($email)){
+    header('location:login.php');
+ };
+ 
+ if(isset($_GET['logout'])){
+    unset($email);
+    session_destroy();
+    header('location:login.php');
+ }
+ 
+ ?>
 
-// Assuming payment_id is passed as a parameter
-if (isset($_GET['payment_id'])) {
-    $payment_id = $_GET['payment_id'];
-    $sql = "SELECT * FROM payments WHERE payment_id = $payment_id";
-    $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        // Output payment history details
-        while($row = $result->fetch_assoc()) {
-            echo "Payment ID: " . $row["payment_id"]. " - Amount: " . $row["amount"]. " - Date: " . $row["payment_date"]. "<br>";
-        }
-    } else {
-        echo "No payment history found for this ID";
-    }
-}
-
-$conn->close();
-?>
 
     <!DOCTYPE html>
     
@@ -39,31 +35,31 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
 
-    <!-- Link to the CSS file -->
+   
     <link rel="stylesheet" href="styles.css">
 <style>
     body {
-        background-color: #f2f2f2; /* Light gray background */
-        color: #333; /* Dark gray text color */
+        background-color: #f2f2f2; 
+        color: #333; 
         font-family: Arial, sans-serif;
     }
 
     .container {
         text-align: center;
         margin: 0 auto;
-        max-width: 600px; /* Adjust the maximum width as needed */
-        background-color: #fff; /* White background for container */
-        padding: 20px; /* Add padding for content */
-        border-radius: 10px; /* Rounded corners */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for container */
+        max-width: 600px; 
+        background-color: #fff; 
+        padding: 20px; 
+        border-radius: 10px; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     }
 
     h2 {
-        color: #008080; /* Orange heading color */
+        color: #008080; 
     }
 
     label {
-        color: #666; /* Dark gray label text color */
+        color: #666; 
     }
 
     input[type="text"],
@@ -78,8 +74,8 @@ $conn->close();
     }
 
     button{
-        background-color: #008080; /* Orange submit button background color */
-        color: #fff; /* White submit button text color */
+        background-color: #008080; 
+        color: #fff; 
         padding: 10px 20px;
         border: none;
         border-radius: 4px;
@@ -87,12 +83,12 @@ $conn->close();
     }
 
     button:hover {
-        background-color: #87CEEB; /* Darker orange hover color */
+        background-color: #87CEEB; 
     }
 
     footer {
-        margin-top: 20px; /* Add space between form and footer */
-        color: #666; /* Dark gray footer text color */
+        margin-top: 20px; 
+        color: #666;
     }
     *{
             padding: 0;
@@ -194,12 +190,12 @@ body {
     background-color: #e4e9f7;
 }
 
-/* Style the container */
+
 .container {
     text-align: center;
 }
 
-/* Style the buttons */
+
 .button {
     display: inline-block;
     padding: 10px 20px;
@@ -220,22 +216,6 @@ body {
 </head>
 <nav>
         <div class="links">
-        <a href="home.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-        <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/home.png" alt="home" style="margin-right: 10px;">
-        <span style="color: black;">Home</span></a>
-<div class="dropdown">
-                <a href="Cart.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-                <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/box.png" alt="box" style="margin-right: 10px;">
-                <span style="color: black;">Product</span></a>
-                <div class="dropdown-content">
-                    <a href="cpu.php">CPU</a>
-                    <a href="graphics_card.php">Graphics Card</a>
-                    <a href="motherboard.php">Motherboard</a>
-                    <a href="ram.php">RAM</a>
-                    <a href="storage.php">Storage</a>
-                    <a href="powersupply.php">Power Supply</a>
-                </div>
-            </div>
             <a href="search.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
             <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/search--v1.png" alt="search--v1" style="margin-right: 10px;">
             <span style="color: black;">Search</span></a>
@@ -244,13 +224,18 @@ body {
     </nav>
 <body>
     <div class="container">
-        <h1>Welcome to Admin Panel</h1>
-        <!-- Add classes to buttons for styling -->
-        <a href="payment.php" class="button">View Payment History</a>
+    <h1>Welcome to Admin Panel</h1>
+     
+        <a href="paymenthistory.php" class="button">View Payment History</a>
         <a href="insert_product.php" class="button">Add Product</a>
-        <a href="drop_product.php" class="button">Drop Product</a>
-        <a href="edit_product.php" class="button">Edit Product</a>
-        <a href="edit_orders.php" class="button">Edit Orders</a>
+        <a href="userlist.php" class="button">View Userlist</a>
+        <a href="drop_product.php" class="button">Edit Product</a>
+        <a href="stock_status.php" class="button">Stock Status</a>
+        <a href="order_approve.php" class="button">Approve Orders</a>
+        <form method="GET" action="Admin_dashboard.php">
+        <input type="submit" name="logout" value="Logout">
+    </form>
     </div>
+    
 </body>
 </html>

@@ -1,3 +1,13 @@
+<?php
+include 'DBconnect.php';
+session_start();
+$user_id =$_SESSION['user_id'] ;
+
+
+
+
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -105,7 +115,7 @@
         <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/home.png" alt="home" style="margin-right: 10px;">
         <span style="color: black;">Home</span></a>
 <div class="dropdown">
-                <a href="Cart.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                <a href="index.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
                 <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/box.png" alt="box" style="margin-right: 10px;">
                 <span style="color: black;">Product</span></a>
                 <div class="dropdown-content">

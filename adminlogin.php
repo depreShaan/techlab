@@ -1,6 +1,4 @@
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +11,8 @@
 </head>
 <body>
     <div class=" wrapper">
-        <form action="signin.php" method="post">
-            <h1>Login</h1>
+        <form action="admin.php" method="post">
+            <h1>Admin Login</h1>
             <div class="input-box">
                 <input type="email" placeholder="Email"  name="email">
                 <i class='bx bxs-user'></i>
@@ -29,14 +27,12 @@
             </div>
 
             <button type="Submit" class="btn">Login</button>
+           
             <div class="register-link"> 
-                <p> Don't have an account? <a href="signup.php">Sign Up</a></p>
+                <p> Are you an user? <a href="login.php">User</a></p>
 
             </div>
-            <div class="register-link"> 
-                <p><a href="adminlogin.php">Admin</a></p>
-
-            </div>
+            
         </form>
 
 

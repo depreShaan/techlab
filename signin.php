@@ -23,7 +23,7 @@ if (isset($_POST['email']) && isset($_POST['pass'])) {
             // Password is correct, set session variables and redirect
             $_SESSION['user_id'] = $row['user_id']; // Adjust this according to your user table
             $_SESSION['email'] = $row['email']; // Adjust this according to your user table
-            header("Location: home.php");
+            header("Location:home.php");
             exit; // Stop further execution
         } else {
             echo "Username or Password Invalid";
@@ -33,3 +33,4 @@ if (isset($_POST['email']) && isset($_POST['pass'])) {
     }
 }
 ?>
+

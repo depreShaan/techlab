@@ -1,53 +1,91 @@
 <?php
-$host = 'localhost';
-$db   = 'techlab';
-$user = 'root'; 
-$pass = ''; 
-$charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$opt = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-$pdo = new PDO($dsn, $user, $pass, $opt);
+include 'DBconnect.php';
+session_start();
+$user_id = $_SESSION['user_id'];
 
-$sql = 'SELECT * FROM product';
-if (isset($_GET['brand'])) {
+if(isset($_POST['update_profile'])){
 
-    $sql .= ' WHERE brand LIKE :brand';
+   $update_name = mysqli_real_escape_string($conn, $_POST['update_name']);
+   $update_email = mysqli_real_escape_string($conn, $_POST['update_email']);
+   $update_phone = mysqli_real_escape_string($conn, $_POST['update_phone']);
+   $update_address = mysqli_real_escape_string($conn, $_POST['update_address']);
+   mysqli_query($conn, "UPDATE user SET name = '$update_name', email = '$update_email' , phone='$update_phone', address='$update_address' WHERE user_id = '$user_id'") or die('query failed');
+
+   
+   $message[] = 'User Details Updated';
+
+ 
+
+
 }
-$stmt = $pdo->prepare($sql);
-if (isset($_GET['brand'])) {
-  
-    $stmt->execute(['brand' => $_GET['brand'] . '%']);
-} else {
-    $stmt->execute();
-}
-$prodcuts = $stmt->fetchAll();
+
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Prodcuts</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        *{
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins',sans-serif;
-        }
-        body{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #e4e9f7;
-        }
-        nav{
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>update profile</title>
+
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="css/style.css">
+   <style>/* profile.css */
+
+body {
+    background-color: #f0f8ff; /* Light blue background */
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: teal; /* Blue top bar */
+    padding: 10px;
+    color: white;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+    background-color: #fff;
+}
+
+.content {
+    background-color: #fff;
+    margin-bottom: 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.topbar a {
+    color: white;
+    text-decoration: none;
+}
+
+.topbar a:hover {
+    text-decoration: underline;
+}
+
+.card-body h5 {
+    margin-bottom: 0;
+}
+
+.card-body .text-secondary {
+    color: #6c757d; /* Dark grey text */
+}
+nav{
             position: fixed;
             top: 0;
             left: 0;
@@ -58,35 +96,16 @@ $prodcuts = $stmt->fetchAll();
             align-items: center;
             padding: 0 50px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            background: white;
-        }
-        nav .search-bar{
-            flex: 1;
-            margin-left: 50px;
-        }
-        nav .search-bar input[type="text"]{
-            font-size: 16px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
-            outline: none;
-            width: 20%;
-        }
-        nav .search-bar input[type="submit"]{
-            font-size: 16px;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 20px;
-            background: #ddd;
-            cursor: pointer;
-            outline: none;
-            margin-left: 10px;
+            background: skyblue;
         }
         nav .links{
             display: flex;
+            justify-content: center;
+            
         }
         nav .links a{
             text-decoration: none;
+            align-items: center;
             margin-left: 20px;
             color: black;
         }
@@ -130,14 +149,11 @@ $prodcuts = $stmt->fetchAll();
         .dropdown:hover .dropdown-content {
             display: block;
         }
-    </style>
+
+</style>
 </head>
 <body>
-    <nav>
-        <form class="search-bar" method="get">
-            <input type="text" name="brand" placeholder="Search by product ID">
-            <input type="submit" value="Search">
-        </form>
+<nav>
         <div class="links">
         <a href="home.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
         <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/home.png" alt="home" style="margin-right: 10px;">
@@ -155,6 +171,9 @@ $prodcuts = $stmt->fetchAll();
                     <a href="powersupply.php">Power Supply</a>
                 </div>
             </div>
+            <a href="search.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+            <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/search--v1.png" alt="search--v1" style="margin-right: 10px;">
+            <span style="color: black;">Search</span></a>
             <a href="login.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
             <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/person-male.png" alt="person-male" style="margin-right: 10px;"><span style="color: black;">Login</span></a>
             <a href="signup.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
@@ -163,28 +182,46 @@ $prodcuts = $stmt->fetchAll();
             <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/person-male.png" alt="signing-a-document" style="margin-right: 10px;"><span style="color: black;">My Profile</span></a>
         </div>
     </nav>
-    
-    <table>
-        <tr><th>Product ID</th>
-            <th>Brand</th>
-            <th>Product Title</th>            
-            <th>Product Price</th>
-            
-        </tr>
-        <?php if (count($prodcuts) > 0): ?>
-            <?php foreach ($prodcuts as $product): ?>
-            <tr><td><?= $product['product_id'] ?></td>
-                <td><?= $product['brand'] ?></td>
-                <td><?= $product['model_name'] ?></td>                
-                <td><?= $product['new'] ?></td>
-                
-            </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="4">No prodcuts found.</td>
-            </tr>
-        <?php endif; ?>
-    </table>
+
+
+   
+<div class="update-profile">
+<h1>PLease</h1>
+   <?php
+      $select = mysqli_query($conn, "SELECT * FROM `user` WHERE user_id = '$user_id'") or die('query failed');
+      if(mysqli_num_rows($select) > 0){
+         $fetch = mysqli_fetch_assoc($select);
+      }
+   ?>
+
+   <form action="" method="post" enctype="multipart/form-data">
+      <?php
+         
+         if(isset($message)){
+            foreach($message as $message){
+               echo '<div class="message">'.$message.'</div>';
+            }
+         }
+      ?>
+      <div class="flex">
+         <div class="inputBox">
+            <span>Username :</span>
+            <input type="text" name="update_name" value="<?php echo $fetch['name']; ?>" class="box"> <br><br>
+            <span>Your email :</span>
+            <input type="email" name="update_email" value="<?php echo $fetch['email']; ?>" class="box"> <br><br>
+            <span>Your Number :</span>
+            <input type="text" name="update_phone" value="<?php echo $fetch['phone']; ?>" class="box"> <br><br>
+            <span>Your Addresss :</span>
+            <input type="text" name="update_address" value="<?php echo $fetch['address']; ?>" class="box"> <br><br>
+          
+               </div>
+         
+      </div>
+      <input type="submit" value="update profile" name="update_profile" class="btn"> <br><br>
+      <a href="account.php" class="delete-btn">go back</a>
+   </form>
+
+</div>
+
 </body>
 </html>
